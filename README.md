@@ -262,7 +262,7 @@ DELETE /api/events/{id}
 
 ```json
 {
-    "message": "Data event berhasi dihapus"
+    "message": "Data event berhasil dihapus"
 }
 ```
 
@@ -403,7 +403,7 @@ PATCH /api/transactions/{id}
 **4. Delete Transaction**
 
 ```http
-DELETE /api/transaction/{id}
+DELETE /api/transactions/{id}
 ```
 
 **Response (200):**

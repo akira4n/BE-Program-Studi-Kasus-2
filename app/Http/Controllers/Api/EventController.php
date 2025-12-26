@@ -98,7 +98,7 @@ class EventController extends Controller
         return response()->json([
             'message' => 'Data event berhasil diperbarui',
             'data' => $event,
-        ], 201);
+        ], 200);
     }
 
     /**

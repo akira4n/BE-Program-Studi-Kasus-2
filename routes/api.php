@@ -16,6 +16,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events', [EventController::class, 'index']);
     Route::get('/events/{id}', [EventController::class, 'show']);
 
-    Route::post('/events', [EventController::class, 'store']);
-    Route::patch('/events/{id}', [EventController::class, 'update']);
+    // admin route
+    Route::middleware('role:admin')->group(function () {});
+
+    // organizer route 
+    Route::middleware('role:organizer')->group(function () {
+        Route::post('/events', [EventController::class, 'store']);
+        Route::patch('/events/{id}', [EventController::class, 'update']);
+        Route::delete('/events/{id}', [EventController::class, 'destroy']);
+    });
+
+    // user route
+    Route::middleware('role:user')->group(function () {});
 });

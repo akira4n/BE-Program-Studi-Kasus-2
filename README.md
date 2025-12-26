@@ -1,59 +1,433 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# **Event Management API**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sebuah RESTful API untuk Event Management yang dibuat dengan Laravel, mencakup fitur user autentikasi, manajemen event, dan proses transaksi atau booking.
 
-## About Laravel
+## 🔧 Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   PHP >= 8.2
+-   MySQL
+-   Composer
+-   Laravel 12
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ⚙️ Instalasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone repository
 
-## Learning Laravel
+```bash
+git clone https://github.com/akira4n/BE-Program-Studi-Kasus-2.git
+cd BE-Program-Studi-Kasus-2
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2. Install dependency
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install
+```
 
-## Laravel Sponsors
+3. Buat dan konfigurasi .env
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+cp .env.example .env
+```
 
-### Premium Partners
+4. Generate app key
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+php artisan key:generate
+```
 
-## Contributing
+5. Run migration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan migrate
+```
 
-## Code of Conduct
+6. Start server
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+## 🔐 Authentication
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Semua endpoint di bawah ini kecuali Register dan Login memerlukan header `Authorization: Bearer {your_token}` yang didapatkan setelah login.
 
-## License
+## 🌐 Dokumentasi API
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Semua endpoint kecuali **Register** dan **Login** memerlukan header:
+`Authorization: Bearer {your_token}`
+
+### Auth
+
+| Method | Endpoint        | Role   | Deskripsi                             |
+| :----- | :-------------- | :----- | :------------------------------------ |
+| `POST` | `/api/register` | Public | Buat akun baru.                       |
+| `POST` | `/api/login`    | Public | Login untuk mendapatkan Bearer Token. |
+
+### Events (Manajemen Acara)
+
+| Method   | Endpoint           | Role             | Deskripsi                               |
+| :------- | :----------------- | :--------------- | :-------------------------------------- |
+| `GET`    | `/api/events`      | All              | Menampilkan semua daftar event.         |
+| `GET`    | `/api/events/{id}` | All              | Menampilkan detail spesifik satu event. |
+| `POST`   | `/api/events`      | Admin, Organizer | Membuat event baru.                     |
+| `PATCH`  | `/api/events/{id}` | Admin, Organizer | Update data event.                      |
+| `DELETE` | `/api/events/{id}` | Admin, Organizer | Menghapus data event.                   |
+
+### Transactions (Pemesanan Tiket)
+
+| Method   | Endpoint                 | Role        | Deskripsi                                                |
+| :------- | :----------------------- | :---------- | :------------------------------------------------------- |
+| `GET`    | `/api/transactions`      | All         | Melihat riwayat transaksi (Filter otomatis sesuai role). |
+| `GET`    | `/api/transactions/{id}` | All         | Melihat detail spesifik satu transaksi.                  |
+| `POST`   | `/api/transactions`      | Admin, User | Membeli tiket event.                                     |
+| `PATCH`  | `/api/transactions/{id}` | All         | Update status.                                           |
+| `DELETE` | `/api/transactions/{id}` | Admin       | Menghapus transaksi.                                     |
+
+### **Auth**
+
+**1. Register**
+
+```http
+POST /api/register
+```
+
+**Request Body:**
+
+```json
+{
+    "name": "Syawal",
+    "email": "syawal@example.com",
+    "password": "password123",
+    "role": "admin" // "admin", "organizer", atau "user"
+}
+```
+
+**Response (201):**
+
+```json
+{
+    "message": "Akun berhasil dibuat",
+    "data": {
+        "name": "Syawal",
+        "email": "syawal@example.com",
+        "role": "admin",
+        "updated_at": "2025-12-26T17:37:17.000000Z",
+        "created_at": "2025-12-26T17:37:17.000000Z",
+        "id": 1
+    }
+}
+```
+
+**2. Login**
+
+```http
+POST /api/login
+```
+
+**Request Body:**
+
+```json
+{
+    "email": "syawal@example.com",
+    "password": "password123"
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "user": {
+        "id": 1,
+        "name": "Syawal",
+        "email": "syawal@example.com",
+        "email_verified_at": null,
+        "role": "admin",
+        "created_at": "2025-12-26T17:37:17.000000Z",
+        "updated_at": "2025-12-26T17:37:17.000000Z"
+    },
+    "token": "your-token"
+}
+```
+
+### **Events**
+
+**1. Get All Events**
+
+```http
+GET /api/events
+```
+
+**Response (200):**
+
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "title": "Konser Musik",
+            "capacity": 150,
+            "stock": 150,
+            "start_event": "2024-12-31 00:00:00",
+            "price": "75000.00",
+            "created_at": "2025-12-26T17:37:57.000000Z",
+            "updated_at": "2025-12-26T17:37:57.000000Z"
+        }
+    ]
+}
+```
+
+**2. Create Event**
+
+```http
+POST /api/events
+```
+
+**Request Body:**
+
+```json
+{
+    "title": "Konser Musik",
+    "capacity": 150,
+    "start_event": "2024-12-31", //format: Y-m-d
+    "price": 75000
+}
+```
+
+**Response (201):**
+
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "title": "Konser Musik",
+            "capacity": 150,
+            "stock": 150,
+            "start_event": "2024-12-31 00:00:00",
+            "price": "75000.00",
+            "created_at": "2025-12-26T17:37:57.000000Z",
+            "updated_at": "2025-12-26T17:37:57.000000Z"
+        }
+    ]
+}
+```
+
+**3. Update Event**
+
+```http
+PATCH /api/events/{id}
+```
+
+**Request Body:**
+
+```json
+{
+    "title": "Konser Musik Tahun Baru",
+    "price": 100000,
+    "start_event": "2025-12-31"
+    //"capacity" : "",
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Data event berhasil diperbarui",
+    "data": {
+        "id": 1,
+        "user_id": 1,
+        "title": "Konser Musik Tahun Baru",
+        "capacity": 150,
+        "stock": 150,
+        "start_event": "2025-12-31",
+        "price": 100000,
+        "created_at": "2025-12-26T17:37:57.000000Z",
+        "updated_at": "2025-12-26T18:15:02.000000Z"
+    }
+}
+```
+
+**4. Delete Event**
+
+```http
+DELETE /api/events/{id}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Data event berhasi dihapus"
+}
+```
+
+### **Transactions**
+
+**1. Get All Transactions**
+
+```http
+GET /api/transactions
+```
+
+**Response (200):**
+
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "event_id": 1,
+            "quantity": 3,
+            "total_price": "300000.00",
+            "status": "paid",
+            "created_at": "2025-12-26T18:16:02.000000Z",
+            "updated_at": "2025-12-26T18:16:02.000000Z",
+            "user": {
+                "id": 1,
+                "name": "Syawal",
+                "email": "syawal@example.com",
+                "email_verified_at": null,
+                "role": "admin",
+                "created_at": "2025-12-26T17:37:17.000000Z",
+                "updated_at": "2025-12-26T17:37:17.000000Z"
+            },
+            "event": {
+                "id": 1,
+                "user_id": 1,
+                "title": "Konser Musik Tahun Baru",
+                "capacity": 150,
+                "stock": 147,
+                "start_event": "2025-12-31 00:00:00",
+                "price": "100000.00",
+                "created_at": "2025-12-26T17:37:57.000000Z",
+                "updated_at": "2025-12-26T18:16:02.000000Z"
+            }
+        }
+    ]
+}
+```
+
+**2. Create Transaction**
+
+```http
+POST /api/transactions
+```
+
+**Request Body:**
+
+```json
+{
+    "event_id": 1,
+    "quantity": 3
+}
+```
+
+**Response (201):**
+
+```json
+{
+    "message": "Transaksi berhasil dilakukan",
+    "data": {
+        "user_id": 1,
+        "event_id": 1,
+        "quantity": 3,
+        "total_price": 300000,
+        "status": "paid",
+        "updated_at": "2025-12-26T18:16:02.000000Z",
+        "created_at": "2025-12-26T18:16:02.000000Z",
+        "id": 1,
+        "event": {
+            "id": 1,
+            "user_id": 1,
+            "title": "Konser Musik Tahun Baru",
+            "capacity": 150,
+            "stock": 147,
+            "start_event": "2025-12-31 00:00:00",
+            "price": "100000.00",
+            "created_at": "2025-12-26T17:37:57.000000Z",
+            "updated_at": "2025-12-26T18:16:02.000000Z"
+        }
+    }
+}
+```
+
+**3. Update Transaction Status**
+
+```http
+PATCH /api/transactions/{id}
+```
+
+**Request Body:**
+
+```json
+{
+    "status": "cancelled" // "waiting", "paid", "cancelled", or "expired"
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Status transaksi berhasil diperbarui",
+    "data": {
+        "id": 1,
+        "user_id": 1,
+        "event_id": 1,
+        "quantity": 3,
+        "total_price": "300000.00",
+        "status": "cancelled",
+        "created_at": "2025-12-26T18:16:02.000000Z",
+        "updated_at": "2025-12-26T18:44:33.000000Z",
+        "event": {
+            "id": 1,
+            "user_id": 1,
+            "title": "Konser Musik Tahun Baru",
+            "capacity": 150,
+            "stock": 150,
+            "start_event": "2025-12-31 00:00:00",
+            "price": "100000.00",
+            "created_at": "2025-12-26T17:37:57.000000Z",
+            "updated_at": "2025-12-26T18:44:33.000000Z"
+        }
+    }
+}
+```
+
+**4. Delete Transaction**
+
+```http
+DELETE /api/transaction/{id}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Transaksi berhasil dihapus"
+}
+```
+
+### Error Responses
+
+**Forbidden Error (403):**
+
+```json
+{
+    "message": "Forbidden"
+}
+```
+
+**Auth Error (401):**
+
+```json
+{
+    "message": "Unauthenticated."
+}
+```

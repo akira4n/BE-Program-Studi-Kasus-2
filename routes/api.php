@@ -18,35 +18,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events', [EventController::class, 'index']);
     Route::get('/events/{id}', [EventController::class, 'show']);
 
-    // admin route
+    Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+    Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
+
+    Route::middleware('role:admin,organizer')->group(function () {
+        Route::post('/events', [EventController::class, 'store']);
+        Route::patch('/events/{id}', [EventController::class, 'update']);
+        Route::delete('/events/{id}', [EventController::class, 'destroy']);
+    });
+
+    Route::middleware('role:admin,user')->group(function () {
+        Route::post('/transactions', [TransactionController::class, 'store']);
+    });
+
     Route::middleware('role:admin')->group(function () {
-        Route::post('/events', [EventController::class, 'store']);
-        Route::patch('/events/{id}', [EventController::class, 'update']);
-        Route::delete('/events/{id}', [EventController::class, 'destroy']);
-
-        Route::get('/transactions', [TransactionController::class, 'index']);
-        Route::get('/transactions/{id}', [TransactionController::class, 'show']);
-        Route::post('/transactions', [TransactionController::class, 'store']);
-        Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
-    });
-
-    // organizer route 
-    Route::middleware('role:organizer')->group(function () {
-        Route::post('/events', [EventController::class, 'store']);
-        Route::patch('/events/{id}', [EventController::class, 'update']);
-        Route::delete('/events/{id}', [EventController::class, 'destroy']);
-
-        Route::get('/transactions', [TransactionController::class, 'index']);
-        Route::get('/transactions/{id}', [TransactionController::class, 'show']);
-        Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
-    });
-
-    // user route
-    Route::middleware('role:user')->group(function () {
-        Route::get('/transactions', [TransactionController::class, 'index']);
-        Route::get('/transactions/{id}', [TransactionController::class, 'show']);
-        Route::post('/transactions', [TransactionController::class, 'store']);
-        Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
     });
 });

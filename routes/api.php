@@ -36,3 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
     });
 });
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Not Found',
+    ], 404);
+});

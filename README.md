@@ -433,3 +433,11 @@ DELETE /api/transactions/{id}
     "message": "Unauthenticated."
 }
 ```
+
+**Not Found Error (404):**
+
+```json
+{
+    "message": "Not Found"
+}
+```

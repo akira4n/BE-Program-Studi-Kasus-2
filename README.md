@@ -57,6 +57,8 @@ Semua endpoint di bawah ini kecuali Register dan Login memerlukan header `Author
 Semua endpoint kecuali **Register** dan **Login** memerlukan header:
 `Authorization: Bearer {your_token}`
 
+**Postman Documentation:** https://documenter.getpostman.com/view/50909123/2sBXVbFskV
+
 ### Auth
 
 | Method | Endpoint        | Role   | Deskripsi                             |
@@ -228,8 +230,8 @@ PATCH /api/events/{id}
 {
     "title": "Konser Musik Tahun Baru",
     "price": 100000,
-    "start_event": "2025-12-31"
-    //"capacity" : "",
+    "start_event": "2025-12-31",
+    "capacity": 160
 }
 ```
 
@@ -242,8 +244,8 @@ PATCH /api/events/{id}
         "id": 1,
         "user_id": 1,
         "title": "Konser Musik Tahun Baru",
-        "capacity": 150,
-        "stock": 150,
+        "capacity": 160,
+        "stock": 160,
         "start_event": "2025-12-31",
         "price": 100000,
         "created_at": "2025-12-26T17:37:57.000000Z",
